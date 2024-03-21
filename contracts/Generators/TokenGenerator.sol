@@ -1,14 +1,11 @@
 //SPDX-License-Identifier: MIT
 pragma solidity 0.8.20;
 
-import "./Ownable.sol";
-import "./TransferHelper.sol";
-import "./IBaseToken.sol";
-import "./ICustomToken.sol";
-
-interface IExternalGenerator {
-    function generate(address token, bytes calldata payload) external returns (address);
-}
+import "../lib/Ownable.sol";
+import "../lib/TransferHelper.sol";
+import "../interfaces/IBaseToken.sol";
+import "../interfaces/ICustomToken.sol";
+import "../interfaces/IExternalGenerator.sol";
 
 contract TokenGenerator is Ownable {
 

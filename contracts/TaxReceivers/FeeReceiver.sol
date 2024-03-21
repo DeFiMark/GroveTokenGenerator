@@ -1,11 +1,12 @@
 //SPDX-License-Identifier: MIT
 pragma solidity 0.8.14;
 
-import "./IERC20.sol";
-import "./Ownable.sol";
-import "./TransferHelper.sol";
-import "./IUniswapV2Router02.sol";
-import "./Cloneable.sol";
+import "../lib/IERC20.sol";
+import "../lib/Ownable.sol";
+import "../lib/TransferHelper.sol";
+import "../lib/IUniswapV2Router02.sol";
+import "../lib/Cloneable.sol";
+import "../interfaces/IImplementation.sol";
 
 contract FeeReceiverData {
 
@@ -33,11 +34,11 @@ contract FeeReceiverData {
 
 }
 
-contract FeeReceiver is FeeReceiverData, Cloneable {
+contract FeeReceiver is FeeReceiverData, Cloneable, IImplementation {
 
     function __init__(
         bytes calldata initPayload
-    ) external {
+    ) external override {
         require(token == address(0), 'Already Initialized');
         (
             address token_,
@@ -58,6 +59,14 @@ contract FeeReceiver is FeeReceiverData, Cloneable {
 
     function withdrawETH(address to, uint256 amount) external onlyOwner {
         _sendETH(to, amount);
+    }
+
+    function setRouter(address router_) external onlyOwner {
+        uniswapRouter = IUniswapV2Router02(router_);
+    }
+
+    function setPercentToSell(uint256 percentToSell_) external onlyOwner {
+        percentToSell = percentToSell_;
     }
 
     function addRecipient(bool ethType, uint8 transferType, address newRecipient, uint256 newAllocation) external onlyOwner {
@@ -195,6 +204,9 @@ contract FeeReceiver is FeeReceiverData, Cloneable {
     }
 
     function _sellTokens(uint256 amount) internal {
+        if (amount == 0 || address(uniswapRouter) == address(0)) {
+            return;
+        }
         address[] memory path = new address[](2);
         path[0] = address(token);
         path[1] = uniswapRouter.WETH();
