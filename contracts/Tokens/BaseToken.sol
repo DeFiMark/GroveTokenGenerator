@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: MIT
 pragma solidity 0.8.20;
 
-import "./IBaseToken.sol";
+import "../interfaces/IBaseToken.sol";
 
 contract BaseTokenData {
 
@@ -31,7 +31,7 @@ contract BaseTokenData {
 }
 
 
-contract BaseToken is BaseTokenData, IBaseToken, Cloneable {
+contract BaseToken is BaseTokenData, IBaseToken {
 
     function __init__(bytes calldata payload) external {
         require(owner == address(0), 'Already Initialized');
@@ -145,24 +145,23 @@ contract BaseToken is BaseTokenData, IBaseToken, Cloneable {
         Without redundancy
      */
     function clone() external override returns(address) {
+        return _clone(address(this));
+    }
+
+    /**
+     * @dev Deploys and returns the address of a clone that mimics the behaviour of `implementation`.
+     *
+     * This function uses the create opcode, which should never revert.
+     */
+    function _clone(address implementation) internal returns (address instance) {
         /// @solidity memory-safe-assembly
         assembly {
             let ptr := mload(0x40)
             mstore(ptr, 0x3d602d80600a3d3981f3363d3d373d3d3d363d73000000000000000000000000)
-            mstore(add(ptr, 0x14), shl(0x60, address(this)))
+            mstore(add(ptr, 0x14), shl(0x60, implementation))
             mstore(add(ptr, 0x28), 0x5af43d82803e903d91602b57fd5bf30000000000000000000000000000000000)
             instance := create(0, ptr, 0x37)
         }
         require(instance != address(0), "ERC1167: create failed");
-    }
-
-    function encodeInitArgs(
-        string memory __name,
-        string memory __symbol,
-        uint8 __decimals,
-        uint256 __totalSupply,
-        address __initialRecipient
-    ) external pure returns (bytes memory) {
-        return abi.encode(__name, __symbol, __decimals, __totalSupply, __initialRecipient);
     }
 }

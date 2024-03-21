@@ -4,6 +4,7 @@ pragma solidity 0.8.20;
 import "../lib/Ownable.sol";
 import "../interfaces/IExternalGenerator.sol";
 import "../interfaces/IImplementation.sol";
+import "../lib/Cloneable.sol";
 
 contract DistributorGenerator is Ownable, IExternalGenerator {
 
@@ -21,7 +22,7 @@ contract DistributorGenerator is Ownable, IExternalGenerator {
     function generate(address token, bytes calldata payload) external override returns (address) {
         
         // clone implementation
-        address distributor = IImplementation(implementation).clone();
+        address distributor = Cloneable(implementation).clone();
         
         // decode payload to attach token to it
         (
@@ -34,7 +35,7 @@ contract DistributorGenerator is Ownable, IExternalGenerator {
         bytes memory newPayload = abi.encode(token, router, rewardToken, minDistribution);
 
         // initialize distributor
-        IImplementation(distributor).__init__(payload);
+        IImplementation(distributor).__init__(newPayload);
         emit CreatedDistributor(distributor, token);
 
         // return new address

@@ -7,6 +7,7 @@ import "../lib/IUniswapV2Router02.sol";
 import "../lib/ReentrancyGuard.sol";
 import "../lib/TransferHelper.sol";
 import "../interfaces/IImplementation.sol";
+import "../lib/EnumerableSet.sol";
 
 interface IToken {
     function owner() external view returns (address);
@@ -21,7 +22,7 @@ contract DistributorData {
     address public rewardToken;
 
     // Uniswap Router
-    IUniswapV2Router02 public router;
+    address public router;
 
     // User info
     struct UserInfo {
@@ -38,7 +39,7 @@ contract DistributorData {
     uint256 public totalShares;
     uint256 public totalDividends;
     uint256 public dividendsPerShare;
-    uint256 private constant PRECISION = 10 ** 18;
+    uint256 internal constant PRECISION = 10 ** 18;
     
     // 0.01 minimum bnb distribution
     uint256 public minDistribution;
@@ -55,6 +56,9 @@ contract DistributorData {
     // Path
     address[] public path;
 
+    // List of all holders
+    EnumerableSet.AddressSet internal holders;
+
     modifier onlyToken() {
         require(msg.sender == Token, 'Not Permitted'); 
         _;
@@ -68,23 +72,20 @@ contract DistributorData {
 }
 
 /** Distributes Tokens To Token Holders */
-contract Distributor is ReentrancyGuard, IImplementation {
+contract Distributor is DistributorData, ReentrancyGuard, IImplementation {
 
     function __init__(bytes calldata payload) external {
         require(Token == address(0), 'Already Initialized');
         (
             Token,
             rewardToken,
-            address router_,
+            router,
             path,
             minDistribution,
             iterations_per_transfer,
             autoDistribute
         ) = abi.decode(payload, (address, address, address, address[], uint256, uint256, bool));
         require(Token != address(0), 'Invalid Token');
-
-        // get router
-        router = IUniswapV2Router02(router_);
 
         // not entered
         _status = _NOT_ENTERED;
@@ -132,7 +133,7 @@ contract Distributor is ReentrancyGuard, IImplementation {
     }
 
     function setRouter(address _router) external onlyTokenOwner {
-        router = IUniswapV2Router02(_router);
+        router = _router;
     }
 
     function setPath(address[] calldata _path) external onlyTokenOwner {
@@ -145,6 +146,14 @@ contract Distributor is ReentrancyGuard, IImplementation {
 
     function setRewardExempt(address wallet, bool rewardless) external onlyToken {
         userInfo[wallet].isRewardExempt = rewardless;
+        if (userInfo[wallet].balance > 0 && rewardless) {
+            totalShares = totalShares - userInfo[wallet].balance;
+            delete userInfo[wallet].balance;
+            delete userInfo[wallet].totalExcluded;
+            if (EnumerableSet.contains(holders, wallet)) {
+                EnumerableSet.remove(holders, wallet);
+            }
+        }
     }
     
     /** Sets Share For User */
@@ -152,6 +161,14 @@ contract Distributor is ReentrancyGuard, IImplementation {
 
         if (userInfo[shareholder].isRewardExempt) {
             return;
+        }
+
+        if (userInfo[shareholder].balance == 0 && amount > 0) {
+            EnumerableSet.add(holders, shareholder);
+        } else if (userInfo[shareholder].balance > 0 && amount == 0) {
+            if (EnumerableSet.contains(holders, shareholder)) {
+                EnumerableSet.remove(holders, shareholder);
+            }
         }
 
         if(userInfo[shareholder].balance > 0 && !Address.isContract(shareholder)){
@@ -261,8 +278,11 @@ contract Distributor is ReentrancyGuard, IImplementation {
     }
 
     function _process(uint256 iterations) internal {
-        uint256 shareholderCount = IToken(Token).getNumberOfHolders();
+        uint256 shareholderCount = EnumerableSet.length(holders);
         if(shareholderCount == 0) { return; }
+        if (iterations > shareholderCount) {
+            iterations = shareholderCount;
+        }
 
         for (uint i = 0; i < iterations;) {
 
@@ -272,7 +292,7 @@ contract Distributor is ReentrancyGuard, IImplementation {
             }
 
             // fetch holder at current index
-            address holder = IToken(Token).getHolderAtIndex(currentIndex);
+            address holder = EnumerableSet.at(holders, currentIndex);
 
             if (holder != address(0) && shouldDistribute(holder)) {
                 _claimRewards(holder);
@@ -293,7 +313,7 @@ contract Distributor is ReentrancyGuard, IImplementation {
         } else {
             // swap bnb for reward tokens
             uint256 balBefore = IERC20(rewardToken).balanceOf(address(this));
-            router.swapExactETHForTokensSupportingFeeOnTransferTokens{value: msg.value}(1, path, address(this), block.timestamp + 100);
+            IUniswapV2Router02(router).swapExactETHForTokensSupportingFeeOnTransferTokens{value: msg.value}(1, path, address(this), block.timestamp + 100);
             uint256 balAfter = IERC20(rewardToken).balanceOf(address(this));
             require(balAfter >= balBefore, "Swap Failed");
             unchecked {
@@ -339,5 +359,13 @@ contract Distributor is ReentrancyGuard, IImplementation {
     
     function getCumulativeDividends(uint256 share) internal view returns (uint256) {
         return ( share * dividendsPerShare ) / PRECISION;
+    }
+
+    function getHolderAt(uint256 index) external view returns (address) {
+        return EnumerableSet.at(holders, index);
+    }
+
+    function getNumHolders() external view returns (uint256) {
+        return EnumerableSet.length(holders);
     }
 }

@@ -4,6 +4,7 @@ pragma solidity 0.8.20;
 import "../lib/Ownable.sol";
 import "../interfaces/IExternalGenerator.sol";
 import "../interfaces/IImplementation.sol";
+import "../lib/Cloneable.sol";
 
 contract TaxReceiverGenerator is Ownable, IExternalGenerator {
 
@@ -21,7 +22,7 @@ contract TaxReceiverGenerator is Ownable, IExternalGenerator {
     function generate(address token, bytes calldata payload) external override returns (address) {
         
         // clone implementation
-        address taxReceiver = IImplementation(implementation).clone();
+        address taxReceiver = Cloneable(implementation).clone();
         
         // decode payload to attach token to it
         (
@@ -33,7 +34,7 @@ contract TaxReceiverGenerator is Ownable, IExternalGenerator {
         bytes memory newPayload = abi.encode(token, router, percentToSell);
 
         // initialize taxReceiver
-        IImplementation(taxReceiver).__init__(payload);
+        IImplementation(taxReceiver).__init__(newPayload);
         emit CreatedTaxReceiver(taxReceiver, token);
 
         // return new address

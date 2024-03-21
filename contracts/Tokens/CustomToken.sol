@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: MIT
 pragma solidity 0.8.20;
 
-import "./ICustomToken.sol";
+import "../interfaces/ICustomToken.sol";
 
 contract CustomTokenData {
 
@@ -77,10 +77,11 @@ contract CustomTokenData {
 }
 
 
-contract CustomToken is CustomTokenData, ICustomToken, Cloneable {
+contract CustomToken is CustomTokenData, ICustomToken {
 
-    function __init__(bytes calldata payload) external {
+    function __init__(bytes calldata payload) public virtual {
         require(owner == address(0), 'Already Initialized');
+        require(factory == address(0), 'Inited Already');
         (
             _name,
             _symbol,
@@ -110,7 +111,7 @@ contract CustomToken is CustomTokenData, ICustomToken, Cloneable {
         ) = abi.decode(payload, (uint256, uint256, uint256));
     }
 
-    function pairExternalContracts(address[] calldata assets) external override {
+    function pairExternalContracts(address[] calldata assets) external virtual override {
         require(msg.sender == factory, 'Not Factory');
         require(feeReceiver == address(0), 'Already Paired');
         require(assets.length == 1, 'Invalid Length');
@@ -172,7 +173,7 @@ contract CustomToken is CustomTokenData, ICustomToken, Cloneable {
         require(s);
     }
 
-    function setFeeRecipient(address recipient) external onlyOwner {
+    function setFeeRecipient(address recipient) public virtual onlyOwner {
         require(recipient != address(0), 'Zero Address');
         feeReceiver = recipient;
         permissions[recipient].isFeeExempt = true;
@@ -293,7 +294,7 @@ contract CustomToken is CustomTokenData, ICustomToken, Cloneable {
     }
 
     /** Internal Transfer */
-    function _transferFrom(address sender, address recipient, uint256 amount) internal returns (bool) {
+    function _transferFrom(address sender, address recipient, uint256 amount) internal virtual returns (bool) {
         require(
             recipient != address(0),
             'Zero Recipient'
@@ -307,7 +308,7 @@ contract CustomToken is CustomTokenData, ICustomToken, Cloneable {
             'Insufficient Balance'
         );
         require(
-            paused == false || msg.sender == this.getOwner(),
+            paused == false || msg.sender == owner,
             'Paused'
         );
         require(
@@ -343,10 +344,9 @@ contract CustomToken is CustomTokenData, ICustomToken, Cloneable {
             emit Transfer(sender, feeRecipient, fee);
 
             // if valid and trigger is enabled, trigger tokenomics mid transfer
-            if (trigger && isValidRecipient) {
+            if (isValidRecipient) {
                 (bool success,) = feeRecipient.call(
-                    abi.encodeWithSelector(bytes4(keccak256(bytes('trigger(uint8)')))),
-                    TRANSFER_TYPE
+                    abi.encodeWithSelector(bytes4(keccak256(bytes('trigger(uint8)'))), TRANSFER_TYPE)                    
                 );
                 success;
             }
@@ -383,13 +383,30 @@ contract CustomToken is CustomTokenData, ICustomToken, Cloneable {
 
     function getTax(address sender, address recipient, uint256 amount) public view returns (uint256, uint8 TRANSFER_TYPE) {
         if ( permissions[sender].isFeeExempt || permissions[recipient].isFeeExempt ) {
-            return (0, address(0), false);
+            return (0, 0);
         }
         return permissions[sender].isLiquidityPool ? 
-               (amount.mul(buyFee).div(TAX_DENOM), 0) : 
+               ((amount * buyFee) / TAX_DENOM, 0) : 
                permissions[recipient].isLiquidityPool ? 
-               (amount.mul(sellFee).div(TAX_DENOM), 1) :
-               (amount.mul(transferFee).div(TAX_DENOM), 2);
+               ((amount * sellFee) / TAX_DENOM, 1) :
+               ((amount * transferFee) / TAX_DENOM, 2);
+    }
+
+    function timeSinceLastSale(address user) public view returns (uint256) {
+        uint256 last = userInfo[user].hourStarted;
+
+        return last > block.timestamp ? 0 : block.timestamp - last;
+    }
+
+    function amountSoldInLastHour(address user) public view returns (uint256) {
+        
+        uint256 timeSince = timeSinceLastSale(user);
+
+        if (timeSince >= max_sell_limit_duration) {
+            return 0;
+        } else {
+            return userInfo[user].totalSold;
+        }
     }
 
     receive() external payable {}
@@ -400,24 +417,23 @@ contract CustomToken is CustomTokenData, ICustomToken, Cloneable {
         Without redundancy
      */
     function clone() external override returns(address) {
+        return _clone(address(this));
+    }
+
+    /**
+     * @dev Deploys and returns the address of a clone that mimics the behaviour of `implementation`.
+     *
+     * This function uses the create opcode, which should never revert.
+     */
+    function _clone(address implementation) internal returns (address instance) {
         /// @solidity memory-safe-assembly
         assembly {
             let ptr := mload(0x40)
             mstore(ptr, 0x3d602d80600a3d3981f3363d3d373d3d3d363d73000000000000000000000000)
-            mstore(add(ptr, 0x14), shl(0x60, address(this)))
+            mstore(add(ptr, 0x14), shl(0x60, implementation))
             mstore(add(ptr, 0x28), 0x5af43d82803e903d91602b57fd5bf30000000000000000000000000000000000)
             instance := create(0, ptr, 0x37)
         }
         require(instance != address(0), "ERC1167: create failed");
-    }
-
-    function encodeInitArgs(
-        string memory __name,
-        string memory __symbol,
-        uint8 __decimals,
-        uint256 __totalSupply,
-        address __initialRecipient
-    ) external pure returns (bytes memory) {
-        return abi.encode(__name, __symbol, __decimals, __totalSupply, __initialRecipient);
     }
 }

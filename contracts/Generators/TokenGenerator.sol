@@ -79,16 +79,16 @@ contract TokenGenerator is Ownable {
         paymentRecipient = recipient;
     }
 
-    function ownerGenerate(bytes calldata payload, uint16 tokenType) external onlyOwner {
-        _generate(payload, tokenType);
+    function ownerGenerate(bytes calldata initPayload, bytes calldata extraPayload, uint16 tokenType, bytes[] calldata generatedAssetPayloads) external onlyOwner {
+        _generate(initPayload, extraPayload, tokenType, generatedAssetPayloads);
     }
 
-    function generate(bytes calldata payload, uint16 tokenType) external {
+    function generate(bytes calldata initPayload, bytes calldata extraPayload, uint16 tokenType, bytes[] calldata generatedAssetPayloads) external {
         // handle payment
         _handlePayment(msg.sender, tokenType);
 
         // generate
-        _generate(payload, tokenType);
+        _generate(initPayload, extraPayload, tokenType, generatedAssetPayloads);
     }
 
     function _generate(bytes calldata initPayload, bytes calldata extraPayload, uint16 tokenType, bytes[] calldata generatedAssetPayloads) internal {

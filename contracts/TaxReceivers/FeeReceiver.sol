@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity 0.8.14;
+pragma solidity 0.8.20;
 
 import "../lib/IERC20.sol";
 import "../lib/Ownable.sol";
@@ -7,6 +7,10 @@ import "../lib/TransferHelper.sol";
 import "../lib/IUniswapV2Router02.sol";
 import "../lib/Cloneable.sol";
 import "../interfaces/IImplementation.sol";
+
+interface IToken {
+    function owner() external view returns (address);
+}
 
 contract FeeReceiverData {
 
@@ -18,10 +22,10 @@ contract FeeReceiverData {
     }
 
     // Token to destinations
-    mapping ( uint8 => TransferType ) private tokenTransferTypes;
+    mapping ( uint8 => TransferType ) internal tokenTransferTypes;
 
     // ETH to destinations
-    mapping ( uint8 => TransferType ) private ethTransferTypes;
+    mapping ( uint8 => TransferType ) internal ethTransferTypes;
 
     // Percentage Of Tokens Sold For ETH
     uint256 public percentToSell;
@@ -31,6 +35,12 @@ contract FeeReceiverData {
 
     // Uniswap Router
     IUniswapV2Router02 public uniswapRouter;
+
+    // only owner
+    modifier onlyOwner() {
+        require(msg.sender == IToken(token).owner(), 'Not Token Owner');
+        _;
+    }
 
 }
 
@@ -178,7 +188,7 @@ contract FeeReceiver is FeeReceiverData, Cloneable, IImplementation {
                 // transfer distributions to each recipient
                 uint len = ethDistributions.length;
                 for (uint i = 0; i < len;) {
-                    _sendETH(ethTransferTypes[TRANSFER_TYPE].recipients[i], distributions[i]);
+                    _sendETH(ethTransferTypes[TRANSFER_TYPE].recipients[i], ethDistributions[i]);
                     unchecked { ++i; }
                 }
 
@@ -237,11 +247,11 @@ contract FeeReceiver is FeeReceiverData, Cloneable, IImplementation {
         }
     }
 
-    function getRecipients() external view returns (address[] memory) {
-        return recipients;
+    function getRecipients(bool ethType, uint8 transferType) external view returns (address[] memory) {
+        return ethType ? ethTransferTypes[transferType].recipients : tokenTransferTypes[transferType].recipients;
     }
 
-    function splitAmount(bool ethType, uint8 tType, uint256 amount) public view returns (uint256[] memory distributions) {
+    function splitAmount(bool ethType, uint8 transferType, uint256 amount) public view returns (uint256[] memory distributions) {
         TransferType storage tType = ethType ? ethTransferTypes[transferType] : tokenTransferTypes[transferType];
 
         // length of recipient list
@@ -250,7 +260,7 @@ contract FeeReceiver is FeeReceiverData, Cloneable, IImplementation {
 
         // loop through recipients, setting their allocations
         for (uint i = 0; i < len;) {
-            distributions[i] = ( ( amount * allocation[tType.recipients[i]] ) / tType.totalAllocation );
+            distributions[i] = ( ( amount * tType.allocation[tType.recipients[i]] ) / tType.totalAllocation );
             unchecked { ++i; }
         }
     }

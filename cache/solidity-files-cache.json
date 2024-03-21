@@ -1,0 +1,814 @@
+{
+  "_format": "hh-sol-cache-2",
+  "files": {
+    "/Users/marknapolitano/dappd/Contracts/GroveTokenGenerator/contracts/Distributors/Distributor.sol": {
+      "lastModificationDate": 1711003421999,
+      "contentHash": "ef347ccb888de764a63284ea7e72b307",
+      "sourceName": "contracts/Distributors/Distributor.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "../lib/IERC20.sol",
+        "../lib/Address.sol",
+        "../lib/IUniswapV2Router02.sol",
+        "../lib/ReentrancyGuard.sol",
+        "../lib/TransferHelper.sol",
+        "../interfaces/IImplementation.sol",
+        "../lib/EnumerableSet.sol"
+      ],
+      "versionPragmas": [
+        "0.8.20"
+      ],
+      "artifacts": [
+        "Distributor",
+        "DistributorData",
+        "IToken"
+      ]
+    },
+    "/Users/marknapolitano/dappd/Contracts/GroveTokenGenerator/contracts/lib/IERC20.sol": {
+      "lastModificationDate": 1711001930388,
+      "contentHash": "9443358278aa7ff8ef02f83cf52ee0cd",
+      "sourceName": "contracts/lib/IERC20.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.8.20"
+      ],
+      "artifacts": [
+        "IERC20"
+      ]
+    },
+    "/Users/marknapolitano/dappd/Contracts/GroveTokenGenerator/contracts/lib/Address.sol": {
+      "lastModificationDate": 1711001930388,
+      "contentHash": "913acee8c22944a2c2a7178c97a77de0",
+      "sourceName": "contracts/lib/Address.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.8.20"
+      ],
+      "artifacts": [
+        "Address"
+      ]
+    },
+    "/Users/marknapolitano/dappd/Contracts/GroveTokenGenerator/contracts/lib/IUniswapV2Router02.sol": {
+      "lastModificationDate": 1711001930388,
+      "contentHash": "c70a3a9a209568a173ed92263eeb7416",
+      "sourceName": "contracts/lib/IUniswapV2Router02.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.8.20"
+      ],
+      "artifacts": [
+        "IUniswapV2Factory",
+        "IUniswapV2Router01",
+        "IUniswapV2Router02"
+      ]
+    },
+    "/Users/marknapolitano/dappd/Contracts/GroveTokenGenerator/contracts/lib/ReentrancyGuard.sol": {
+      "lastModificationDate": 1711001930388,
+      "contentHash": "34642810f656722b336525e3a4937edc",
+      "sourceName": "contracts/lib/ReentrancyGuard.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.8.20"
+      ],
+      "artifacts": [
+        "ReentrancyGuard"
+      ]
+    },
+    "/Users/marknapolitano/dappd/Contracts/GroveTokenGenerator/contracts/lib/TransferHelper.sol": {
+      "lastModificationDate": 1711001930388,
+      "contentHash": "569e624c5ffaf4612d8ba56fdb59d68f",
+      "sourceName": "contracts/lib/TransferHelper.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.6.0"
+      ],
+      "artifacts": [
+        "TransferHelper"
+      ]
+    },
+    "/Users/marknapolitano/dappd/Contracts/GroveTokenGenerator/contracts/interfaces/IImplementation.sol": {
+      "lastModificationDate": 1711001930388,
+      "contentHash": "4fe70df49fe08dd5b5d60b667075e21a",
+      "sourceName": "contracts/interfaces/IImplementation.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.8.20"
+      ],
+      "artifacts": [
+        "IImplementation"
+      ]
+    },
+    "/Users/marknapolitano/dappd/Contracts/GroveTokenGenerator/contracts/lib/EnumerableSet.sol": {
+      "lastModificationDate": 1711003285092,
+      "contentHash": "929c6e2a30efd266cdb53cba8e5823c1",
+      "sourceName": "contracts/lib/EnumerableSet.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.8.20"
+      ],
+      "artifacts": [
+        "EnumerableSet"
+      ]
+    },
+    "/Users/marknapolitano/dappd/Contracts/GroveTokenGenerator/contracts/interfaces/IDistributor.sol": {
+      "lastModificationDate": 1711001930388,
+      "contentHash": "1519c394782ae73f8dea2ad3c133b2bd",
+      "sourceName": "contracts/interfaces/IDistributor.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./IImplementation.sol"
+      ],
+      "versionPragmas": [
+        "0.8.20"
+      ],
+      "artifacts": [
+        "IDistributor"
+      ]
+    },
+    "/Users/marknapolitano/dappd/Contracts/GroveTokenGenerator/contracts/Tokens/RewardToken.sol": {
+      "lastModificationDate": 1711003865494,
+      "contentHash": "e1a0b05ca1c3336e5845ae495e9525d7",
+      "sourceName": "contracts/Tokens/RewardToken.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./CustomToken.sol",
+        "../interfaces/IDistributor.sol"
+      ],
+      "versionPragmas": [
+        "0.8.20"
+      ],
+      "artifacts": [
+        "RewardToken"
+      ]
+    },
+    "/Users/marknapolitano/dappd/Contracts/GroveTokenGenerator/contracts/Tokens/CustomToken.sol": {
+      "lastModificationDate": 1711003834287,
+      "contentHash": "727c53adf7e05b32c35a8a55982c99b1",
+      "sourceName": "contracts/Tokens/CustomToken.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "../interfaces/ICustomToken.sol"
+      ],
+      "versionPragmas": [
+        "0.8.20"
+      ],
+      "artifacts": [
+        "CustomToken",
+        "CustomTokenData"
+      ]
+    },
+    "/Users/marknapolitano/dappd/Contracts/GroveTokenGenerator/contracts/interfaces/ICustomToken.sol": {
+      "lastModificationDate": 1711001930388,
+      "contentHash": "0280336eb071ff1590ab6487e4bc4aea",
+      "sourceName": "contracts/interfaces/ICustomToken.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./IBaseToken.sol"
+      ],
+      "versionPragmas": [
+        "0.8.20"
+      ],
+      "artifacts": [
+        "ICustomToken"
+      ]
+    },
+    "/Users/marknapolitano/dappd/Contracts/GroveTokenGenerator/contracts/interfaces/IBaseToken.sol": {
+      "lastModificationDate": 1711001930388,
+      "contentHash": "769e18e7cd9bb1eee89d99f06f941eaf",
+      "sourceName": "contracts/interfaces/IBaseToken.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "../lib/IERC20.sol",
+        "./IImplementation.sol"
+      ],
+      "versionPragmas": [
+        "0.8.20"
+      ],
+      "artifacts": [
+        "IBaseToken"
+      ]
+    },
+    "/Users/marknapolitano/dappd/Contracts/GroveTokenGenerator/contracts/TaxReceivers/FeeReceiver.sol": {
+      "lastModificationDate": 1711002621833,
+      "contentHash": "038078382bd4f2223753f0bc650eca28",
+      "sourceName": "contracts/TaxReceivers/FeeReceiver.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "../lib/IERC20.sol",
+        "../lib/Ownable.sol",
+        "../lib/TransferHelper.sol",
+        "../lib/IUniswapV2Router02.sol",
+        "../lib/Cloneable.sol",
+        "../interfaces/IImplementation.sol"
+      ],
+      "versionPragmas": [
+        "0.8.20"
+      ],
+      "artifacts": [
+        "FeeReceiver",
+        "FeeReceiverData",
+        "IToken"
+      ]
+    },
+    "/Users/marknapolitano/dappd/Contracts/GroveTokenGenerator/contracts/lib/Ownable.sol": {
+      "lastModificationDate": 1711001930388,
+      "contentHash": "5703fff2c9b7eb21c428f795df82da54",
+      "sourceName": "contracts/lib/Ownable.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.8.20"
+      ],
+      "artifacts": [
+        "Ownable"
+      ]
+    },
+    "/Users/marknapolitano/dappd/Contracts/GroveTokenGenerator/contracts/lib/Cloneable.sol": {
+      "lastModificationDate": 1711001930388,
+      "contentHash": "9b64d230980426c391100123e2d11bc5",
+      "sourceName": "contracts/lib/Cloneable.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.8.20"
+      ],
+      "artifacts": [
+        "Cloneable"
+      ]
+    },
+    "/Users/marknapolitano/dappd/Contracts/GroveTokenGenerator/contracts/Generators/TaxReceiverGenerator.sol": {
+      "lastModificationDate": 1711003897485,
+      "contentHash": "ad85888fee6956bdfb61916c5a32b1fd",
+      "sourceName": "contracts/Generators/TaxReceiverGenerator.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "../lib/Ownable.sol",
+        "../interfaces/IExternalGenerator.sol",
+        "../interfaces/IImplementation.sol",
+        "../lib/Cloneable.sol"
+      ],
+      "versionPragmas": [
+        "0.8.20"
+      ],
+      "artifacts": [
+        "TaxReceiverGenerator"
+      ]
+    },
+    "/Users/marknapolitano/dappd/Contracts/GroveTokenGenerator/contracts/interfaces/IExternalGenerator.sol": {
+      "lastModificationDate": 1711001930388,
+      "contentHash": "9fe4e55ebd0260cfa18cf5e27c861090",
+      "sourceName": "contracts/interfaces/IExternalGenerator.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.8.20"
+      ],
+      "artifacts": [
+        "IExternalGenerator"
+      ]
+    },
+    "/Users/marknapolitano/dappd/Contracts/GroveTokenGenerator/contracts/Generators/TokenGenerator.sol": {
+      "lastModificationDate": 1711003479822,
+      "contentHash": "d1f18674bb05a4b9fcc2b38f71f2c970",
+      "sourceName": "contracts/Generators/TokenGenerator.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "../lib/Ownable.sol",
+        "../lib/TransferHelper.sol",
+        "../interfaces/IBaseToken.sol",
+        "../interfaces/ICustomToken.sol",
+        "../interfaces/IExternalGenerator.sol"
+      ],
+      "versionPragmas": [
+        "0.8.20"
+      ],
+      "artifacts": [
+        "TokenGenerator"
+      ]
+    },
+    "/Users/marknapolitano/dappd/Contracts/GroveTokenGenerator/contracts/Generators/DistributorGenerator.sol": {
+      "lastModificationDate": 1711003892765,
+      "contentHash": "81c40437ac419509290a2f850ddf11f5",
+      "sourceName": "contracts/Generators/DistributorGenerator.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "../lib/Ownable.sol",
+        "../interfaces/IExternalGenerator.sol",
+        "../interfaces/IImplementation.sol",
+        "../lib/Cloneable.sol"
+      ],
+      "versionPragmas": [
+        "0.8.20"
+      ],
+      "artifacts": [
+        "DistributorGenerator"
+      ]
+    },
+    "/Users/marknapolitano/dappd/Contracts/GroveTokenGenerator/contracts/Tokens/BaseToken.sol": {
+      "lastModificationDate": 1711002756906,
+      "contentHash": "e33fc2f780a90f10e3c3bf0435f8133a",
+      "sourceName": "contracts/Tokens/BaseToken.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "../interfaces/IBaseToken.sol"
+      ],
+      "versionPragmas": [
+        "0.8.20"
+      ],
+      "artifacts": [
+        "BaseToken",
+        "BaseTokenData"
+      ]
+    }
+  }
+}

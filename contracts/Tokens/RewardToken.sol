@@ -2,7 +2,7 @@
 pragma solidity 0.8.20;
 
 import "./CustomToken.sol";
-import "./IDistributor.sol";
+import "../interfaces/IDistributor.sol";
 
 contract RewardToken is CustomToken {
 
@@ -10,10 +10,6 @@ contract RewardToken is CustomToken {
     IDistributor public distributor;
 
     constructor() CustomToken() {}
-
-    function __init__(bytes calldata payload) external override {
-        super.__init__(payload);
-    }
 
     function pairExternalContracts(address[] calldata assets) external override {
         require(msg.sender == factory, 'Not Factory');
@@ -26,23 +22,24 @@ contract RewardToken is CustomToken {
         distributor = IDistributor(assets[1]);
 
         // set share of owner
-        distributor.setShare(_owner, _balances[_owner]);
+        distributor.setShare(owner, _balances[owner]);
         distributor.setRewardExempt(address(this), true);
         distributor.setRewardExempt(feeReceiver, true);
     }
 
-    function setFeeRecipient(address recipient) external override onlyOwner {
+    function setFeeRecipient(address recipient) public override onlyOwner {
         super.setFeeRecipient(recipient);
         distributor.setRewardExempt(feeReceiver, true);
     }
 
-    function _transferFrom(address sender, address recipient, uint256 amount) internal override {
-        super._transferFrom(sender, recipient, amount);
+    function _transferFrom(address sender, address recipient, uint256 amount) internal override returns (bool) {
+        bool success = super._transferFrom(sender, recipient, amount);
         if (address(distributor) != address(0)) {
             distributor.setShare(sender, _balances[sender]);
             distributor.setShare(recipient, _balances[recipient]);
             distributor.process();
         }
+        return success;
     }
 
     function setDistributor(address distributor_) external onlyOwner {
