@@ -5,16 +5,33 @@ const {ethers} = require('hardhat');
 const isTestnet = true
 
 // Contracts
-let Token;
+let BaseToken;
+let CustomToken;
+let RewardToken;
+
+let FeeReceiver;
+
+let DistributorGenerator;
+let TaxReceiverGenerator;
+let TokenGenerator;
+
+let Distributor;
+
+// Cost of Deploying
+const BASE_TOKEN_COST = ONE_HUNDREDTH; // 0.01 Native Asset
+const CUSTOM_TOKEN_COST = POINT_ONE;   // 0.1 Native Asset
+const REWARD_TOKEN_COST = ONE; // 1.0 Native Asset
 
 // Ownership
 const newOwner = "0xA753d39dB9713caf8D7C4dDEDcD670f65D28707A";
 
 // Values
-const ONE = "1000000000000000000";
-const ONE_HUNDRED = "100000000000000000000";
+const ONE_HUNDREDTH        = "10000000000000000";
+const POINT_ONE            = "100000000000000000";
+const ONE                  = "1000000000000000000";
+const ONE_HUNDRED          = "100000000000000000000";
 const ONE_HUNDRED_THOUSAND = "100000000000000000000000";
-const ONE_MILLION = "1000000000000000000000000";
+const ONE_MILLION          = "1000000000000000000000000";
 
 async function verify(address, args) {
   try {
@@ -77,22 +94,39 @@ async function main() {
     console.log('Deploying on', isTestnet ? 'Testnet!' : 'Mainnet!');
     await sleep(1000);
 
-    const tokenArgs = [
-        "Test Token",
-        "TEST",
-        18,
-        ONE_MILLION
-    ];
+    // Deploy Implementation Contracts
+    BaseToken = await deployContract('BaseToken Implementation', 'contracts/Tokens/BaseToken.sol:BaseToken', []);
+    CustomToken = await deployContract('BaseToken Implementation', 'contracts/Tokens/CustomToken.sol:CustomToken', []);
+    RewardToken = await deployContract('RewardToken Implementation', 'contracts/Tokens/RewardToken.sol:RewardToken', []);
+    FeeReceiver = await deployContract('FeeReceiver Implementation', 'contracts/TaxReceivers/FeeReceiver.sol:FeeReceiver', []);
+    Distributor = await deployContract('Distributor Implementation', 'contracts/Distributors/Distributor.sol:Distributor', []);
 
-    // Fetch Governance Manager
-    Token = await deployContract('Token', 'contracts/Token.sol:Token', tokenArgs);
+    // Deploy Generators
+    DistributorGenerator = await deployContract('Distributor Generator', 'contracts/Generators/DistributorGenerator.sol:DistributorGenerator', [Distributor.address]);
+    TaxReceiverGenerator = await deployContract('TaxReceiver Generator', 'contracts/Generators/TaxReceiverGenerator.sol:TaxReceiverGenerator', [FeeReceiver.address]);
+    TokenGenerator = await deployContract('Token Generator', 'contracts/Generators/TokenGenerator.sol:TokenGenerator', []);
 
-    await Token.changeOwner(newOwner, { nonce: getNonce() });
-    await sleep(2000);
-    console.log('Changed Owner');
+    // Set up base tokens inside of token generator
+    await TokenGenerator.setTokenType(0, BaseToken.address, BASE_TOKEN_COST, { nonce: getNonce() });
+    console.log('Set Token Type 0');
+    await sleep(5000);
+    await TokenGenerator.setTokenTypeAndExternalGenerators(1, CustomToken.address, CUSTOM_TOKEN_COST, [TaxReceiverGenerator.address], { nonce: getNonce() });
+    console.log('Set Token Type 1');
+    await sleep(5000);
+    await TokenGenerator.setTokenTypeAndExternalGenerators(2, RewardToken.address, REWARD_TOKEN_COST, [TaxReceiverGenerator.address, DistributorGenerator.address], { nonce: getNonce() });
+    console.log('Set Token Type 2');
+    await sleep(5000);
 
+    
     // Verify Contracts
-    await verify(Token.address, tokenArgs);
+    await verify(BaseToken.address, []);
+    await verify(CustomToken.address, []);
+    await verify(RewardToken.address, []);
+    await verify(FeeReceiver.address, []);
+    await verify(Distributor.address, []);
+    await verify(DistributorGenerator.address, [Distributor.address]);
+    await verify(TaxReceiverGenerator.address, [FeeReceiver.address]);
+    await verify(TokenGenerator.address, []);
 }
 
 main()
