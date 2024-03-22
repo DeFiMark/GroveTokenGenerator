@@ -43,6 +43,12 @@ contract TokenGenerator is Ownable {
     // Events
     event TokenCreated(address tokenAddress, uint16 tokenType);
 
+    constructor(
+        address _paymentRecipient
+    ) {
+        paymentRecipient = _paymentRecipient;
+    }
+
     function setDiscountPercentage(address user, uint256 discountPercentage) external onlyOwner {
         userInfo[user].discountPercentage = discountPercentage;
     }
@@ -83,7 +89,7 @@ contract TokenGenerator is Ownable {
         _generate(initPayload, extraPayload, tokenType, generatedAssetPayloads);
     }
 
-    function generate(bytes calldata initPayload, bytes calldata extraPayload, uint16 tokenType, bytes[] calldata generatedAssetPayloads) external {
+    function generate(bytes calldata initPayload, bytes calldata extraPayload, uint16 tokenType, bytes[] calldata generatedAssetPayloads) external payable {
         // handle payment
         _handlePayment(msg.sender, tokenType);
 
@@ -155,7 +161,15 @@ contract TokenGenerator is Ownable {
             IERC20(paymentToken).allowance(msg.sender, address(this)) >= amount,
             "Insufficient Allowance"
         );
-        TransferHelper.safeTransferFrom(paymentToken, msg.sender, paymentRecipient, amount);
+        if (paymentToken == address(0)) {
+            require(
+                msg.value >= amount,
+                "Insufficient Value"
+            );
+            TransferHelper.safeTransferETH(paymentRecipient, msg.value);
+        } else {
+            TransferHelper.safeTransferFrom(paymentToken, msg.sender, paymentRecipient, amount);
+        }
     }
 
     function getDiscountForUser(address user) external view returns (uint256) {

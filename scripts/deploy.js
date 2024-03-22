@@ -104,7 +104,7 @@ async function main() {
     // Deploy Generators
     DistributorGenerator = await deployContract('Distributor Generator', 'contracts/Generators/DistributorGenerator.sol:DistributorGenerator', [Distributor.address]);
     TaxReceiverGenerator = await deployContract('TaxReceiver Generator', 'contracts/Generators/TaxReceiverGenerator.sol:TaxReceiverGenerator', [FeeReceiver.address]);
-    TokenGenerator = await deployContract('Token Generator', 'contracts/Generators/TokenGenerator.sol:TokenGenerator', []);
+    TokenGenerator = await deployContract('Token Generator', 'contracts/Generators/TokenGenerator.sol:TokenGenerator', [owner.address]);
 
     // Set up base tokens inside of token generator
     await TokenGenerator.setTokenType(0, BaseToken.address, BASE_TOKEN_COST, { nonce: getNonce() });
@@ -117,7 +117,7 @@ async function main() {
     console.log('Set Token Type 2');
     await sleep(5000);
 
-    
+
     // Verify Contracts
     await verify(BaseToken.address, []);
     await verify(CustomToken.address, []);
@@ -126,7 +126,7 @@ async function main() {
     await verify(Distributor.address, []);
     await verify(DistributorGenerator.address, [Distributor.address]);
     await verify(TaxReceiverGenerator.address, [FeeReceiver.address]);
-    await verify(TokenGenerator.address, []);
+    await verify(TokenGenerator.address, [owner.address]);
 }
 
 main()
