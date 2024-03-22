@@ -689,8 +689,8 @@
       ]
     },
     "/Users/marknapolitano/dappd/Contracts/GroveTokenGenerator/contracts/Generators/TokenGenerator.sol": {
-      "lastModificationDate": 1711003479822,
-      "contentHash": "d1f18674bb05a4b9fcc2b38f71f2c970",
+      "lastModificationDate": 1711085709375,
+      "contentHash": "8e929c69f125c208b6cefbab28a9fd5c",
       "sourceName": "contracts/Generators/TokenGenerator.sol",
       "solcConfig": {
         "version": "0.8.20",

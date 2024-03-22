@@ -17,11 +17,6 @@ let TokenGenerator;
 
 let Distributor;
 
-// Cost of Deploying
-const BASE_TOKEN_COST = ONE_HUNDREDTH; // 0.01 Native Asset
-const CUSTOM_TOKEN_COST = POINT_ONE;   // 0.1 Native Asset
-const REWARD_TOKEN_COST = ONE; // 1.0 Native Asset
-
 // Ownership
 const newOwner = "0xA753d39dB9713caf8D7C4dDEDcD670f65D28707A";
 
@@ -32,6 +27,11 @@ const ONE                  = "1000000000000000000";
 const ONE_HUNDRED          = "100000000000000000000";
 const ONE_HUNDRED_THOUSAND = "100000000000000000000000";
 const ONE_MILLION          = "1000000000000000000000000";
+
+// Cost of Deploying
+const BASE_TOKEN_COST = ONE_HUNDREDTH; // 0.01 Native Asset
+const CUSTOM_TOKEN_COST = POINT_ONE;   // 0.1 Native Asset
+const REWARD_TOKEN_COST = ONE; // 1.0 Native Asset
 
 async function verify(address, args) {
   try {
@@ -96,7 +96,7 @@ async function main() {
 
     // Deploy Implementation Contracts
     BaseToken = await deployContract('BaseToken Implementation', 'contracts/Tokens/BaseToken.sol:BaseToken', []);
-    CustomToken = await deployContract('BaseToken Implementation', 'contracts/Tokens/CustomToken.sol:CustomToken', []);
+    CustomToken = await deployContract('CustomToken Implementation', 'contracts/Tokens/CustomToken.sol:CustomToken', []);
     RewardToken = await deployContract('RewardToken Implementation', 'contracts/Tokens/RewardToken.sol:RewardToken', []);
     FeeReceiver = await deployContract('FeeReceiver Implementation', 'contracts/TaxReceivers/FeeReceiver.sol:FeeReceiver', []);
     Distributor = await deployContract('Distributor Implementation', 'contracts/Distributors/Distributor.sol:Distributor', []);
