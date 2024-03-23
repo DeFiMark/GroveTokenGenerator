@@ -107,8 +107,11 @@ contract CustomToken is CustomTokenData, ICustomToken {
         (
             buyFee,
             sellFee,
-            transferFee
-        ) = abi.decode(payload, (uint256, uint256, uint256));
+            transferFee,
+            sellLimitEnabled,
+            max_sell_limit,
+            max_sell_limit_duration
+        ) = abi.decode(payload, (uint256, uint256, uint256, bool, uint256, uint256));
     }
 
     function pairExternalContracts(address[] calldata assets) external virtual override {
@@ -250,7 +253,7 @@ contract CustomToken is CustomTokenData, ICustomToken {
 
     function setMaxSellLimit(uint256 newLimit) external onlyOwner {
         require(
-            newLimit >= _totalSupply / 1_000_000,
+            newLimit >= _totalSupply / 1_000_000 || newLimit == 0,
             'Max Sell Limit Too Low'
         );
         max_sell_limit = newLimit;
@@ -371,11 +374,12 @@ contract CustomToken is CustomTokenData, ICustomToken {
             }
 
             // ensure max limit is preserved
-            require(
-                userInfo[sender].totalSold <= max_sell_limit,
-                'Sell Exceeds Max Sell Limit'
-            );
-
+            if (max_sell_limit > 0) {
+                require(
+                    userInfo[sender].totalSold <= max_sell_limit,
+                    'Sell Exceeds Max Sell Limit'
+                );
+            }
         }
 
         return true;
