@@ -379,8 +379,8 @@
       ]
     },
     "/Users/marknapolitano/dappd/Contracts/GroveTokenGenerator/contracts/Tokens/CustomToken.sol": {
-      "lastModificationDate": 1711003834287,
-      "contentHash": "727c53adf7e05b32c35a8a55982c99b1",
+      "lastModificationDate": 1712634728901,
+      "contentHash": "7984529a26e3e311a06f3559a3c15c51",
       "sourceName": "contracts/Tokens/CustomToken.sol",
       "solcConfig": {
         "version": "0.8.20",
@@ -689,8 +689,8 @@
       ]
     },
     "/Users/marknapolitano/dappd/Contracts/GroveTokenGenerator/contracts/Generators/TokenGenerator.sol": {
-      "lastModificationDate": 1711085709375,
-      "contentHash": "8e929c69f125c208b6cefbab28a9fd5c",
+      "lastModificationDate": 1713834700534,
+      "contentHash": "7e38a1514f415fb53ffb2d1bce1b9e27",
       "sourceName": "contracts/Generators/TokenGenerator.sol",
       "solcConfig": {
         "version": "0.8.20",

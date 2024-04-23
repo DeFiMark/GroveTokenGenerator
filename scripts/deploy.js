@@ -24,6 +24,7 @@ const newOwner = "0xA753d39dB9713caf8D7C4dDEDcD670f65D28707A";
 const ONE_HUNDREDTH        = "10000000000000000";
 const POINT_ONE            = "100000000000000000";
 const ONE                  = "1000000000000000000";
+const ONE_HALF             = "500000000000000000";
 const ONE_HUNDRED          = "100000000000000000000";
 const ONE_HUNDRED_THOUSAND = "100000000000000000000000";
 const ONE_MILLION          = "1000000000000000000000000";
@@ -31,7 +32,7 @@ const ONE_MILLION          = "1000000000000000000000000";
 // Cost of Deploying
 const BASE_TOKEN_COST = ONE_HUNDREDTH; // 0.01 Native Asset
 const CUSTOM_TOKEN_COST = POINT_ONE;   // 0.1 Native Asset
-const REWARD_TOKEN_COST = ONE; // 1.0 Native Asset
+const REWARD_TOKEN_COST = ONE_HALF; // 0.5 Native Asset
 
 async function verify(address, args) {
   try {

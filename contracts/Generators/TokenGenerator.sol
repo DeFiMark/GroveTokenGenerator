@@ -153,14 +153,6 @@ contract TokenGenerator is Ownable {
     }
 
     function _transferIn(uint256 amount) internal {
-        require(
-            IERC20(paymentToken).balanceOf(msg.sender) >= amount,
-            "Insufficient Balance"
-        );
-        require(
-            IERC20(paymentToken).allowance(msg.sender, address(this)) >= amount,
-            "Insufficient Allowance"
-        );
         if (paymentToken == address(0)) {
             require(
                 msg.value >= amount,
@@ -168,6 +160,14 @@ contract TokenGenerator is Ownable {
             );
             TransferHelper.safeTransferETH(paymentRecipient, msg.value);
         } else {
+            require(
+                IERC20(paymentToken).balanceOf(msg.sender) >= amount,
+                "Insufficient Balance"
+            );
+            require(
+                IERC20(paymentToken).allowance(msg.sender, address(this)) >= amount,
+                "Insufficient Allowance"
+            );
             TransferHelper.safeTransferFrom(paymentToken, msg.sender, paymentRecipient, amount);
         }
     }
