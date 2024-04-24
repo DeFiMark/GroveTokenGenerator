@@ -105,8 +105,8 @@ contract CustomToken is CustomTokenData, ICustomToken {
     function __extra_init__(bytes calldata payload) external override {
         require(msg.sender == factory, 'Only Factory');
         (
-            buyFee,
-            sellFee,
+            buyFee,       // 100 => 100 / 10,000 => 1% buy fee
+            sellFee,      // 25 => 0.25% sell fee
             transferFee,
             sellLimitEnabled,
             max_sell_limit,
