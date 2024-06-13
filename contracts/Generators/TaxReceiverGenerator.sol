@@ -26,12 +26,11 @@ contract TaxReceiverGenerator is Ownable, IExternalGenerator {
         
         // decode payload to attach token to it
         (
-            address router,
-            uint256 percentToSell
-        ) = abi.decode(payload, (address, uint256));
+            address router
+        ) = abi.decode(payload, (address));
 
         // encode new payload to include token
-        bytes memory newPayload = abi.encode(token, router, percentToSell);
+        bytes memory newPayload = abi.encode(token, router);
 
         // initialize taxReceiver
         IImplementation(taxReceiver).__init__(newPayload);

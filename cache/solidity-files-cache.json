@@ -379,8 +379,8 @@
       ]
     },
     "/Users/marknapolitano/dappd/Contracts/GroveTokenGenerator/contracts/Tokens/CustomToken.sol": {
-      "lastModificationDate": 1712634728901,
-      "contentHash": "7984529a26e3e311a06f3559a3c15c51",
+      "lastModificationDate": 1713835694996,
+      "contentHash": "61ccbc8dba8844f3473b5219baf0913a",
       "sourceName": "contracts/Tokens/CustomToken.sol",
       "solcConfig": {
         "version": "0.8.20",
@@ -495,8 +495,8 @@
       ]
     },
     "/Users/marknapolitano/dappd/Contracts/GroveTokenGenerator/contracts/TaxReceivers/FeeReceiver.sol": {
-      "lastModificationDate": 1711002621833,
-      "contentHash": "038078382bd4f2223753f0bc650eca28",
+      "lastModificationDate": 1718293619064,
+      "contentHash": "941be716c2a38ab1cc828f513468a684",
       "sourceName": "contracts/TaxReceivers/FeeReceiver.sol",
       "solcConfig": {
         "version": "0.8.20",
@@ -612,8 +612,8 @@
       ]
     },
     "/Users/marknapolitano/dappd/Contracts/GroveTokenGenerator/contracts/Generators/TaxReceiverGenerator.sol": {
-      "lastModificationDate": 1711003897485,
-      "contentHash": "ad85888fee6956bdfb61916c5a32b1fd",
+      "lastModificationDate": 1716923486068,
+      "contentHash": "c1f1c83f408046c431ac299f8bf4b6c6",
       "sourceName": "contracts/Generators/TaxReceiverGenerator.sol",
       "solcConfig": {
         "version": "0.8.20",
