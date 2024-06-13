@@ -45,13 +45,27 @@ contract FeeReceiver is FeeReceiverData, Cloneable, IImplementation {
         (
             address token_,
             address router_,
+            address[] memory _recipients,
+            uint256[] memory _allocations,
             address[] memory swapPath_
-        ) = abi.decode(initPayload, (address, address, address[]));
+        ) = abi.decode(initPayload, (address, address, address[], uint256[], address[]));
         require(token_ != address(0), 'Invalid Token');
+        uint len = _recipients.length;
+        require(len == _allocations.length, 'Invalid Lengths');
         token = token_;
         if (router_ != address(0)) {
             uniswapRouter = IUniswapV2Router02(router_);
             swapPath = swapPath_;
+        }
+        for (uint i = 0; i < len;) {
+            if (allocation[_recipients[i]] == 0 && _allocations[i] > 0) {
+                recipients.push(_recipients[i]);
+            }
+            unchecked {
+                allocation[_recipients[i]] += _allocations[i];
+                totalAllocation += _allocations[i];
+            }
+            unchecked { ++i; }
         }
     }
 
