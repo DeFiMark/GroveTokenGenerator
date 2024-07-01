@@ -15,6 +15,10 @@ module.exports = {
       url: 'https://bsc-dataseed.binance.org',
       accounts: [secret.key]
     },
+    groveMainnet: {
+      url: 'https://mainnet.grovechain.io/',
+      accounts: [secret.key]
+    }
   },
   etherscan: {
     apiKey: secret.apiKey

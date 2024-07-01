@@ -612,8 +612,8 @@
       ]
     },
     "/Users/marknapolitano/dappd/Contracts/GroveTokenGenerator/contracts/Generators/TaxReceiverGenerator.sol": {
-      "lastModificationDate": 1716923486068,
-      "contentHash": "c1f1c83f408046c431ac299f8bf4b6c6",
+      "lastModificationDate": 1719860504843,
+      "contentHash": "ae96c4637f9717eaa666fc58f8c4fae3",
       "sourceName": "contracts/Generators/TaxReceiverGenerator.sol",
       "solcConfig": {
         "version": "0.8.20",

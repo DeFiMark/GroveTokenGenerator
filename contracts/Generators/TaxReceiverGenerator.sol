@@ -26,11 +26,28 @@ contract TaxReceiverGenerator is Ownable, IExternalGenerator {
         
         // decode payload to attach token to it
         (
-            address router
-        ) = abi.decode(payload, (address));
+            address router_,
+            address[] memory _recipients,
+            uint256[] memory _allocations,
+            address[] memory swapPath_
+        ) = abi.decode(payload, (address, address[], uint256[], address[]));
+
+        // attach token to swap path
+        address[] memory newSwapPath;
+        if (router_ != address(0)) {
+            newSwapPath = new address[](swapPath_.length + 1);
+
+            newSwapPath[0] = token;
+            for (uint i = 0; i < swapPath_.length; i++) {
+                newSwapPath[i + 1] = swapPath_[i];
+            }
+
+        } else {
+            newSwapPath = swapPath_;
+        }
 
         // encode new payload to include token
-        bytes memory newPayload = abi.encode(token, router);
+        bytes memory newPayload = abi.encode(token, router_, _recipients, _allocations, newSwapPath);
 
         // initialize taxReceiver
         IImplementation(taxReceiver).__init__(newPayload);

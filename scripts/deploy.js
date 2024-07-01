@@ -1,9 +1,6 @@
 /* eslint-disable */
 const {ethers} = require('hardhat');
 
-// is Testnet or Mainnet Deploy
-const isTestnet = true
-
 // Contracts
 let BaseToken;
 let CustomToken;
@@ -18,7 +15,7 @@ let TokenGenerator;
 let Distributor;
 
 // Ownership
-const newOwner = "0xA753d39dB9713caf8D7C4dDEDcD670f65D28707A";
+// const newOwner = "0xA753d39dB9713caf8D7C4dDEDcD670f65D28707A";
 
 // Values
 const ONE_HUNDREDTH        = "10000000000000000";
@@ -30,9 +27,11 @@ const ONE_HUNDRED_THOUSAND = "100000000000000000000000";
 const ONE_MILLION          = "1000000000000000000000000";
 
 // Cost of Deploying
-const BASE_TOKEN_COST   = "100000000000000000";    // 0.1 Native Asset
-const CUSTOM_TOKEN_COST = "200000000000000000";    // 0.2 Native Asset
-const REWARD_TOKEN_COST = "300000000000000000";    // 0.3 Native Asset
+const BASE_TOKEN_COST   = "1000000000000000000";    // 1 Native Asset
+const CUSTOM_TOKEN_COST = "2000000000000000000";    // 2 Native Asset
+const REWARD_TOKEN_COST = "3000000000000000000";    // 3 Native Asset
+
+const minGas = ethers.utils.parseUnits("3", "gwei")
 
 async function verify(address, args) {
   try {
@@ -54,7 +53,7 @@ function getNonce() {
 async function deployContract(name = 'Contract', path, args) {
   const Contract = await ethers.getContractFactory(path);
 
-  const Deployed = await Contract.deploy(...args, {nonce: getNonce()});
+  const Deployed = await Contract.deploy(...args, {nonce: getNonce(), gasPrice: minGas });
   console.log(name, ': ', Deployed.address);
   await sleep(6000);
 
@@ -92,7 +91,8 @@ async function main() {
     nonceOffset = 0;
     console.log('Account nonce: ', baseNonce);
 
-    console.log('Deploying on', isTestnet ? 'Testnet!' : 'Mainnet!');
+    const newOwner = "0x319428B799cE4e286e74767719523F275b911F1e";
+
     await sleep(1000);
 
     // Deploy Implementation Contracts
@@ -105,32 +105,29 @@ async function main() {
     // Deploy Generators
     DistributorGenerator = await deployContract('Distributor Generator', 'contracts/Generators/DistributorGenerator.sol:DistributorGenerator', [Distributor.address]);
     TaxReceiverGenerator = await deployContract('TaxReceiver Generator', 'contracts/Generators/TaxReceiverGenerator.sol:TaxReceiverGenerator', [FeeReceiver.address]);
-    TokenGenerator = await deployContract('Token Generator', 'contracts/Generators/TokenGenerator.sol:TokenGenerator', [owner.address]);
+    TokenGenerator = await deployContract('Token Generator', 'contracts/Generators/TokenGenerator.sol:TokenGenerator', [newOwner]);
 
     // Set up base tokens inside of token generator
-    await TokenGenerator.setTokenType(0, BaseToken.address, BASE_TOKEN_COST, { nonce: getNonce() });
+    await TokenGenerator.setTokenType(0, BaseToken.address, BASE_TOKEN_COST, { nonce: getNonce(), gasPrice: minGas });
     console.log('Set Token Type 0');
     await sleep(5000);
-    await TokenGenerator.setTokenTypeAndExternalGenerators(1, CustomToken.address, CUSTOM_TOKEN_COST, [TaxReceiverGenerator.address], { nonce: getNonce() });
+    await TokenGenerator.setTokenTypeAndExternalGenerators(1, CustomToken.address, CUSTOM_TOKEN_COST, [TaxReceiverGenerator.address], { nonce: getNonce(), gasPrice: minGas });
     console.log('Set Token Type 1');
     await sleep(5000);
-    await TokenGenerator.setTokenTypeAndExternalGenerators(2, RewardToken.address, REWARD_TOKEN_COST, [TaxReceiverGenerator.address, DistributorGenerator.address], { nonce: getNonce() });
+    await TokenGenerator.setTokenTypeAndExternalGenerators(2, RewardToken.address, REWARD_TOKEN_COST, [TaxReceiverGenerator.address, DistributorGenerator.address], { nonce: getNonce(), gasPrice: minGas });
     console.log('Set Token Type 2');
     await sleep(5000);
 
-
-    const newOwner = "0x3f1b0334ae9c405D94f330c9460D98079349f2aC";
-
     // change owner
-    await TokenGenerator.changeOwner(newOwner, { nonce: getNonce() });
+    await TokenGenerator.changeOwner(newOwner, { nonce: getNonce(), gasPrice: minGas });
     console.log('Set New Owner In Token Generator');
     await sleep(5000);
 
-    await DistributorGenerator.changeOwner(newOwner, { nonce: getNonce() });
+    await DistributorGenerator.changeOwner(newOwner, { nonce: getNonce(), gasPrice: minGas });
     console.log('Set New Owner In Distributor Generator');
     await sleep(5000);
 
-    await TaxReceiverGenerator.changeOwner(newOwner, { nonce: getNonce() });
+    await TaxReceiverGenerator.changeOwner(newOwner, { nonce: getNonce(), gasPrice: minGas });
     console.log('Set New Owner In Distributor Generator');
     await sleep(5000);
 
